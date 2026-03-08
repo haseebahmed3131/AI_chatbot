@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import './Dashboard.css'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 const CATEGORIES = ['Billing', 'Refund', 'Account Access', 'Cancellation', 'General Inquiry']
 
@@ -123,7 +123,7 @@ function Dashboard({ refreshTrigger }) {
                 <tr>
                   <th>Timestamp</th>
                   <th>User Message</th>
-                  <th>Bot Response</th>
+                  {/* <th>Bot Response</th> */}
                   <th>Category</th>
                   <th>Response Time</th>
                 </tr>

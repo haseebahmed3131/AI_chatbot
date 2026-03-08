@@ -188,6 +188,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 thead {
@@ -202,6 +203,12 @@ th {
   color: #4a5568;
   font-size: 0.9rem;
 }
+
+th:nth-child(1) { width: 12%; }  /* Timestamp */
+th:nth-child(2) { width: 28%; }  /* User Message */
+th:nth-child(3) { width: 28%; }  /* Bot Response */
+th:nth-child(4) { width: 20%; }  /* Category */
+th:nth-child(5) { width: 12%; }  /* Response Time */
 
 tbody tr {
   border-bottom: 1px solid #e2e8f0;

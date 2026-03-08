@@ -5,9 +5,12 @@ from datetime import datetime
 import enum
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
-# Load environment variables from .env file
-load_dotenv()
+# Load environment variables from root .env file
+root_dir = Path(__file__).parent.parent
+env_path = root_dir / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # MySQL Database Configuration
 MYSQL_HOST = os.getenv("MYSQL_HOST", "localhost")

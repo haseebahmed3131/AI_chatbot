@@ -20,8 +20,6 @@ mysql_data/
 # Environment
 .env
 .env.local
-backend/.env
-backend/.env.local
 
 # Node
 node_modules/
