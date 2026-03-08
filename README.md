@@ -21,30 +21,49 @@ A lightweight observability platform for monitoring customer support chatbot con
 
 - **Backend**: Python FastAPI
 - **Frontend**: React + Vite
-- **Database**: SQLite
-- **LLM**: OpenAI API
+- **Database**: MySQL 8.0
+- **LLM**: LangChain + OpenRouter (supports multiple LLM providers)
 
 ## Prerequisites
 
 - Docker & Docker Compose (recommended) OR
-- Python 3.9+ and Node.js 18+
-- OpenAI API key
+- Python 3.9+, Node.js 18+, and MySQL 8.0+
+- OpenRouter API key (get free at https://openrouter.ai)
 
 ## Setup Instructions
 
 ### Quick Start (Recommended)
 
 1. Clone the repository
-2. Copy `.env.example` to `.env` and add your OpenAI API key:
+
+2. Copy `.env.example` to `.env` and configure:
    ```bash
    cp .env.example .env
    ```
-   Edit `.env` and set: `OPENAI_API_KEY=your_key_here`
+   
+   Edit `.env` and set:
+   ```bash
+   # OpenRouter API Key
+   OPENROUTER_API_KEY=your_key_here
+   
+   # MySQL Configuration (optional - defaults provided)
+   MYSQL_USER=supportlens_user
+   MYSQL_PASSWORD=your_secure_password
+   MYSQL_DATABASE=supportlens_db
+   ```
+   
+   Get a free OpenRouter API key at: https://openrouter.ai/keys
 
-3. Run with Docker:
+3. Run with Docker (includes MySQL):
    ```bash
    docker-compose up
    ```
+   
+   Docker will automatically:
+   - Start MySQL container
+   - Create database and user
+   - Start backend and seed data
+   - Start frontend
 
 4. Open http://localhost:5173 in your browser
 
@@ -52,16 +71,40 @@ A lightweight observability platform for monitoring customer support chatbot con
 
 If you prefer to run without Docker:
 
-**Backend:**
+**1. Set up MySQL:**
+```bash
+# Install MySQL 8.0+ if not already installed
+# Create database and user
+mysql -u root -p
+```
+
+```sql
+CREATE DATABASE supportlens_db;
+CREATE USER 'supportlens_user'@'localhost' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON supportlens_db.* TO 'supportlens_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+```
+
+**2. Backend:**
 ```bash
 cd backend
 pip install -r requirements.txt
-export OPENAI_API_KEY=your_key_here  # or set OPENAI_API_KEY=your_key_here on Windows
+
+# Set environment variables
+export OPENROUTER_API_KEY=your_key_here
+export MYSQL_HOST=localhost
+export MYSQL_PORT=3306
+export MYSQL_USER=supportlens_user
+export MYSQL_PASSWORD=your_password
+export MYSQL_DATABASE=supportlens_db
+
+# Seed database and start
 python seed_data.py
 uvicorn main:app --reload --port 8000
 ```
 
-**Frontend (in a new terminal):**
+**3. Frontend (in a new terminal):**
 ```bash
 cd frontend
 npm install
@@ -72,6 +115,7 @@ npm run dev
 - Frontend: http://localhost:5173
 - Backend API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+- MySQL: localhost:3306
 
 ## API Endpoints
 
@@ -107,7 +151,8 @@ To create the sample PR:
 
 ## Key Features Demonstrated
 
-✅ LLM-powered chatbot with custom system prompt  
+✅ LLM-powered chatbot with LangChain framework  
+✅ OpenRouter integration (supports multiple LLM providers)  
 ✅ Automatic conversation classification (5 categories)  
 ✅ Real-time observability dashboard  
 ✅ Aggregate analytics with category breakdown  
@@ -117,11 +162,21 @@ To create the sample PR:
 ✅ Responsive UI with color-coded categories  
 ✅ Docker support for easy deployment  
 
+## LangChain & OpenRouter Benefits
+
+- **Flexibility**: Easily switch between different LLM providers
+- **Cost-effective**: OpenRouter provides access to multiple models with competitive pricing
+- **Abstraction**: LangChain provides a clean interface for LLM interactions
+- **Prompt Management**: Structured prompt templates with LangChain
+- **Free Tier**: OpenRouter offers free credits to get started  
+
 ## Classification Prompt Quality
 
-The classification prompt in `backend/llm_service.py` handles:
-- Clear category definitions with examples
-- Edge case handling (multi-topic messages)
+The classification prompt in `backend/llm_service.py` uses LangChain for:
+- Structured prompt templates
+- Clean separation of system and user messages
+- Easy prompt versioning and testing
+- Handles edge cases (multi-topic messages)
 - Priority rules (cancellation > billing)
 - Distinction between similar categories (refund vs billing)
 - Validation and normalization of LLM output
