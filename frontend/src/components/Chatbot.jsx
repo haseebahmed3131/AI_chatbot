@@ -2,7 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import './Chatbot.css'
 
-const API_URL = 'http://localhost:8000'
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
 function Chatbot({ onNewTrace }) {
   const [message, setMessage] = useState('')
